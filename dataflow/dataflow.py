@@ -3,23 +3,28 @@ from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam import window
 
 class ProcessData(beam.DoFn):
-    def process(self, element, window=beam.DoFn.WindowParam):
-        # Implement your processing logic here
-        print(el)
-        return [f"Processed: {element}"]
+    def process(self, element):
+        # Assume element is a byte string; decode it, process it, and re-encode it
+        # This example simply prefixes the string with "Processed: " for demonstration
+        processed_element = f"Processed: {element.decode('utf-8')}".encode('utf-8')
+        print(processed_element)
+        return [processed_element]
+
 
 options = PipelineOptions(
     runner='DataflowRunner',
-    project='your-gcp-project-id',
-    region='your-region',
-    temp_location='gs://your-bucket/temp',
-    staging_location='gs://your-bucket/staging',
+    project='cloud-final-418702',
+    region='northamerica-northeast2',
+    temp_location='gs://highd-dataset-final/temp',
+    staging_location='gs://highd-dataset-final/staging',
+    streaming=True
 )
 
-with beam.Pipeline(options=options) as pipeline:
-    (pipeline
-     | 'ReadFromPubSub' >> beam.io.ReadFromPubSub(topic='projects/your-gcp-project-id/subscriptions/events-subscription')
-     | 'WindowInto' >> beam.WindowInto(window.FixedWindows(60))  # 60-second fixed windows
-     | 'ProcessData' >> beam.ParDo(ProcessData())
-     | 'WriteToPubSub' >> beam.io.WriteToPubSub('gs://your-bucket/output')
+# Define your pipeline
+with beam.Pipeline(options=options) as p:
+    (p 
+     | 'ReadFromPubSub' >> beam.io.ReadFromPubSub(topic='projects/cloud-final-418702/topics/highd-topic')
+     | 'WindowInto' >> beam.WindowInto(window.FixedWindows(60))
+     | 'ProcessData' >> beam.ParDo(ProcessData())  # Replace with your processing function
+     | 'WriteToPubSub' >> beam.io.WriteToPubSub(topic='projects/cloud-final-418702/topics/highd-processed-topic')
     )

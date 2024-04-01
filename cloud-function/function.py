@@ -17,21 +17,28 @@ def publish_message(cloud_event):
     """
     Background Cloud Function to be triggered by Cloud Storage.
     This function is triggered by any file upload to a specified bucket.
+    Processes only CSV files.
 
     Args:
-        event (dict): The event payload.
-        context (google.cloud.functions.Context): Metadata for the event.
+        cloud_event: The CloudEvent payload.
     """
     event = cloud_event.data
+    file_name = event['name']
+    
+    # Check if the file is a CSV by looking at its extension
+    if not file_name.endswith('.csv'):
+        print(f"Skipping non-CSV file: {file_name}")
+        return
+
     file_data = {
         'bucket': event['bucket'],
-        'name': event['name'],
+        'name': file_name,
         'metageneration': event['metageneration'],
         'timeCreated': event['timeCreated'],
         'updated': event['updated']
     }
 
-    print(f"Processing file: {file_data['name']} from bucket: {file_data['bucket']}.")
+    print(f"Processing CSV file: {file_data['name']} from bucket: {file_data['bucket']}.")
 
     # Convert the file data to JSON
     message_json = json.dumps(file_data)
@@ -45,4 +52,3 @@ def publish_message(cloud_event):
     except Exception as e:
         print(f"An error occurred: {e}")
         raise
-
