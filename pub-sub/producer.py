@@ -30,12 +30,15 @@ def ingest_csv_from_gcs_to_pubsub():
 
     # Iterate over the HTTPIterator object to access the items
     for blob in blobs:
+        if not blob.name.endswith('.csv'):
+            print(f"Skipping non-CSV file: {blob.name}")
+            continue
         temp_blob = bucket.blob(blob.name)
         # Download the blob contents as a bytes object
         blob_data = temp_blob.download_as_bytes()
 
         # Convert the bytes data to a string and split into lines
-        csv_data = blob_data.decode('utf-8').splitlines()
+        csv_data = blob_data.decode('ISO-8859-1').splitlines()
 
         reader = csv.reader(csv_data)
         for row in reader:

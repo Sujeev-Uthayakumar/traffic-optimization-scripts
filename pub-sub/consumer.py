@@ -14,16 +14,13 @@ subscriber = pubsub_v1.SubscriberClient()
 subscription_path = subscriber.subscription_path(project_id, subscription_name)
 
 def callback(message):
-    data = json.loads(message.data.decode("utf-8"))
+    data = json.loads(message.data)
     print(f"Received message: {data}")
     message.ack()
 
-subscriber.subscribe(subscription_path, callback=callback)
+streaming_pull_future = subscriber.subscribe(subscription_path, callback=callback)
 
 print("Listening for messages...")
-try:
-    while True:
-        time.sleep(60)  # Keep the main thread alive
-except KeyboardInterrupt:
-    subscriber.close()
-    print("Subscriber connection closed.")
+
+with subscriber:
+    streaming_pull_future.result()
