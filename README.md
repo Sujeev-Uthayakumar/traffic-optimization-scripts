@@ -36,3 +36,31 @@ To get started with this project, follow these steps:
 > --streaming \
 > --experiment use_unsupported_python_version \
 > --requirements_file ./requirements.txt
+
+## Cloud SQL Script
+>CREATE TABLE tracks (
+  frame INT,
+  id INT,
+  x FLOAT,
+  y FLOAT,
+  width FLOAT,
+  height FLOAT,
+  xVelocity FLOAT,
+  yVelocity FLOAT,
+  xAcceleration FLOAT,
+  yAcceleration FLOAT,
+  frontSightDistance FLOAT,
+  backSightDistance FLOAT,
+  dhw FLOAT,
+  thw FLOAT,
+  ttc FLOAT,
+  precedingXVelocity FLOAT,
+  precedingId INT,
+  followingId INT,
+  leftPrecedingId INT,
+  leftAlongsideId INT,
+  rightPrecedingId INT,
+  rightAlongsideId INT,
+  rightFollowingId INT,
+  laneId INT
+);
