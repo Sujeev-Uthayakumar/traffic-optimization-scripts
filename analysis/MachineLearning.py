@@ -9,7 +9,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_percentage_error, 
 import xgboost as xgb
 
 # Assuming gcsfs is installed
-gcs_uri = 'gs://first_track/01_tracks.csv'
+gcs_uri = ''
 df = pd.read_csv(gcs_uri)
 
 # Feature Engineering
@@ -75,7 +75,7 @@ plt.title('Actual vs Predicted Velocities')
 plt.show()
 
 # Example of new data (replace this with your actual new data)
-gcs_uris = 'gs://first_track/02_tracks.csv'
+gcs_uris = ''
 df_new = pd.read_csv(gcs_uris)
 
 # Apply the same feature engineering to the new data

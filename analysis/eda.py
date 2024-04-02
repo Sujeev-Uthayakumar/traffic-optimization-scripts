@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-gcs_uri = 'gs://first_track/01_tracks.csv'
+gcs_uri = ''
 
 df = pd.read_csv(gcs_uri)
 
