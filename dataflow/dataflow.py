@@ -3,13 +3,12 @@ from apache_beam.options.pipeline_options import PipelineOptions, StandardOption
 from apache_beam import window
 import csv
 from io import StringIO
-import psycopg2
+import mysql.connector
 import json
 from google.cloud import storage
 
 class FetchAndProcessFileJSON(beam.DoFn):
     def process(self, element):
-        # Assuming element is a JSON byte string with the file name under "file_name" key
         message = json.loads(element.decode('utf-8'))
         file_name = message['name']
         bucket_name = "highd-dataset-final"
@@ -52,13 +51,12 @@ class FetchAndProcessFileJSON(beam.DoFn):
 class InsertIntoCloudSQL(beam.DoFn):
     def start_bundle(self):
         # Initialize database connection at the start of a bundle
-        # Adjust with your Cloud SQL instance connection details
-        self.connection = psycopg2.connect(
-            dbname='', 
-            user='', 
-            password='', 
-            host='', # Instead of the public IP
-            port=''
+        self.connection = mysql.connector.connect(
+            database='',
+            user='',
+            password='',
+            host='',
+            port=3306  # Default MySQL port
         )
         self.cursor = self.connection.cursor()
 
